@@ -42,7 +42,7 @@ function getChangeIcon(value: number | null): Icon {
 }
 
 function getEffectiveDateRange(dateStr: string): string {
-  const start = new Date(dateStr);
+  const start = new Date(`${dateStr}T00:00:00`);
   const end = new Date(start);
   end.setDate(end.getDate() + 6);
 
@@ -53,7 +53,13 @@ function getEffectiveDateRange(dateStr: string): string {
 export default function Command() {
   const { isLoading, data, error } = useFetch<FuelPrice[]>(API_URL);
 
-  if (error) return <List.EmptyView title="Failed to load prices" description={error.message} />;
+  if (error) {
+    return (
+      <List>
+        <List.EmptyView title="Failed to load prices" description={error.message} />
+      </List>
+    );
+  }
 
   const level = data?.find((d) => d.series_type === "level");
   const change = data?.find((d) => d.series_type === "change_weekly");
